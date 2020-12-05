@@ -5,7 +5,7 @@
 
 
 import numpy as np
-
+from abc import ABC, abstractmethod
 
 # In[57]:
 
@@ -13,94 +13,91 @@ import numpy as np
 """
 abstract representation of a bayesian network
 """
-class BayesianNet:
-    dag = np.array(np.empty)
-    roots = None
-    leaves = None
-    d = None
-    nodes_in = None
-    
-    def get_roots(self):
+class BayesianNet(ABC):
+    __dag = np.array(np.empty)
+    __roots = None
+    __leaves = None
+    __d = None
+
+    def __get_roots(self):
         """
         returns: roots of the baysian network
         """
         roots = set()
-        for i in range(self.d):
-            if np.prod(self.dag[:,i] == 0) == 1 and np.prod(self.dag[i,:] == 0) == 0:
+        for i in range(self.__d):
+            if np.prod(self.__dag[:,i] == 0) == 1 and np.prod(self.__dag[i,:] == 0) == 0:
                 roots.add(i)
         return roots
-    
-    def get_leaves(self):
+
+    def __get_leaves(self):
         """
         returns: leaves of the bayesian network
         """
         leaves = set()
-        for i in range(self.d):
-            if np.prod(self.dag[:,i] == 0) == 0 and np.prod(self.dag[i,:] == 0) == 1:
+        for i in range(self.__d):
+            if np.prod(self.__dag[:,i] == 0) == 0 and np.prod(self.__dag[i,:] == 0) == 1:
                 leaves.add(i)
         return leaves
-    
-    def get_parents(self, i):
+
+    def __get_parents(self, i):
         """
         returns: the parents of the node as a set. If a node has no parents returns empty set
         """
+        '''
         parents = set()
-        for j in range(self.d):
-            if (self.dag[j,i]) == 1:
+        for j in range(self.__d):
+            if (self.__dag[j,i]) == 1:
                 parents.add(j)
         return parents
-    
-    def nodes_in_graph(self):
+        '''
+        return np.where(self.__dag[:,i] == 1)[0]
+
+    def __init__(self, __dag):
         """
-        returns: the set of nodes in the graph
-        """
-        nodes_in = set(range(self.d))
-        for i in range(self.d):
-            if np.prod(self.dag[:,i] == 0) == 1 and np.prod(self.dag[i,:] == 0) == 1:
-                nodes_in.remove(i)
-        return nodes_in
-    
-    def in_graph(self, i):
-        """
-        returns: true if the node is in the graph
-        """
-        return i in self.nodes_in
-    
-    def __init__(self, dag):
-        """
-        Takes in a Directed Acyclic Graph of the form 
+        Takes in a Directed Acyclic Graph of the form
         np.array([[...]])
-        a square matrix ie dag.shape[0] = dag.shape[1]
+        a square matrix ie __dag.shape[0] = __dag.shape[1]
         where value i,j represents whether there is a directed edge from node i to node j
-        Precondition: dag is a valid Directed Acyclic Graph
+        Precondition: __dag is a valid Directed Acyclic Graph
         """
-        self.dag = dag
-        self.d = self.dag.shape[1]
-        self.roots = self.get_roots()
-        self.leaves = self.get_leaves()
-        self.nodes_in = self.nodes_in_graph()
-        
+        self.__dag = __dag
+        self.__d = self.__dag.shape[1]
+        self.__roots = self.__get_roots()
+        self.__leaves = self.__get_leaves()
+
+    '''
+    #old implementaiton, which technically allows overriding implementation to have
+    access to RV values upon which it is not conditionally dependent, so one could
+    code a bayesian net that doesn't obey its own structure
+    @abstractmethod
     def conditional_prob(self,x,i):
         """
-        conditional probavility. use get_parents() if needed
+        conditional probability. use get_parents() if needed
         """
-        pass  
-    
+        pass
+    '''
+
+    @abstractmethod
+    def conditional_prob(self, i, x_i_value, parent_values):
+        """
+        returns: the conditional probability P(x_i = x_i_value | x_i_parents = parent_values),
+        where parent_values is a dictionary whose keys are the parent indices and its values
+        are their corresponding values.
+        """
+        pass
+
     def joint_prob(self,x):
         """
         returns: the joint prob of x
         """
-        assert x.shape[0] == self.d
+        assert x.shape[0] == self.__d
         acc = 1
-        for i in range(self.d):
-            if self.in_graph(i):
-                acc = acc * self.conditional_prob(x,i)
+        for i in range(self.__d):
+            i_parents = self.__get_parents(i)
+            i_parent_values = x[i_parents]
+            parent_value_dict = {i_parents[i]:i_parent_values[i] for i in range(len(i_parents))}
+            acc = acc * self.conditional_prob(i, x[i], parent_value_dict)
         return acc
-    
-    def predict_prob(self,x,i,vals):
-        """
-        returns: a prediction of the unspecifiec value x[i]
-        vals is a list of possible values that x[i] can take
-        """
-        pass
 
+    def get_dag(self):
+        return self.__dag.copy()
