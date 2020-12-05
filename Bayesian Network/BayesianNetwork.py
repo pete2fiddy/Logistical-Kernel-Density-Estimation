@@ -93,8 +93,7 @@ class BayesianNet:
         assert x.shape[0] == self.d
         acc = 1
         for i in range(self.d):
-            if self.in_graph(i):
-                acc = acc * self.conditional_prob(x,i)
+            acc = acc * self.conditional_prob(x,i)
         return acc
     
     def predict_prob(self,x,i,vals):
