@@ -37,7 +37,7 @@ class KDE(object):
         n,d = self.dataset.shape
         return lambda y : 1 / n * sum([self.k_H(y,self.dataset[i],d) for i in range(n)])
     
-    def eval(self, data):
+    def joint_prob(self, data):
         n,d = data.shape
         density = np.zeros(n)
         for i in range(n):
