@@ -5,16 +5,24 @@
 
 
 import numpy as np
-import BayesianNetwork
+from .BayesianNetwork import BayesianNet
 
 
 # In[4]:
 
 
-class MontyBayesNet(BayesianNetwork.BayesianNet):
+class MontyBayesNet(BayesianNet):
+
+
+    """
+    DAG for monty hall problem
+    0: guestdoor
+    1: prizedoor
+    2: montydoor
+    """
 
     def __init__(self):
-        BayesianNetwork.BayesianNet.__init__(self, np.array([[0,0,1],
+        BayesianNet.__init__(self, np.array([[0,0,1],
                              [0,0,1],
                              [0,0,0]]))
 
@@ -89,19 +97,14 @@ class MontyBayesNet(BayesianNetwork.BayesianNet):
         probs = {k:p/total_prob for k, p in probs.items()}
         return probs
 
-"""
-DAG for monty hall problem
-0: guestdoor
-1: prizedoor
-2: montydoor
-"""
-
-
-x = MontyBayesNet()
-#Guest picks A, Prize was under B, Monty shows A, Not possible
-print(x.joint_prob(np.array(['A','B','A'])))
-#Guest picks A, Prize was under A, Monty will show either B or C
-print(x.joint_prob(np.array(['A','A','B'])))
-#Guest picks A, Prize was under B, Monty will always show C
-print(x.joint_prob(np.array(['A','B','C'])))
-x.predict_prob(np.array(['A',None,'B']),1,['A','B','C'])
+    def monty_hall_sampler_func(self, prob_func):
+        probs = {k: prob_func(k) for k in ['A', 'B', 'C']}
+        r = np.random.random_sample()
+        sum = 0
+        for k in probs:
+            p = probs[k]
+            if r >= sum and r < sum + p:
+                return k
+            sum += p
+        #shouldn't get here
+        return None

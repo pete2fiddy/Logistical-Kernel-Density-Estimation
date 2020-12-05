@@ -19,7 +19,7 @@ class BayesianNet(ABC):
     __leaves = None
     __d = None
 
-    def __get_roots(self):
+    def __construct_roots(self):
         """
         returns: roots of the baysian network
         """
@@ -27,9 +27,9 @@ class BayesianNet(ABC):
         for i in range(self.__d):
             if np.prod(self.__dag[:,i] == 0) == 1 and np.prod(self.__dag[i,:] == 0) == 0:
                 roots.add(i)
-        return roots
+        return np.array([i for i in roots]).astype(np.int64)
 
-    def __get_leaves(self):
+    def __construct_leaves(self):
         """
         returns: leaves of the bayesian network
         """
@@ -37,9 +37,9 @@ class BayesianNet(ABC):
         for i in range(self.__d):
             if np.prod(self.__dag[:,i] == 0) == 0 and np.prod(self.__dag[i,:] == 0) == 1:
                 leaves.add(i)
-        return leaves
+        return np.array([i for i in leaves]).astype(np.int64)
 
-    def __get_parents(self, i):
+    def get_parents(self, i):
         """
         returns: the parents of the node as a set. If a node has no parents returns empty set
         """
@@ -52,6 +52,15 @@ class BayesianNet(ABC):
         '''
         return np.where(self.__dag[:,i] == 1)[0]
 
+    def get_children(self, i):
+        return np.where(self.__dag[i] == 1)[0]
+
+    def get_roots(self):
+        return self.roots.copy()
+
+    def get_d(self):
+        return self.__d
+
     def __init__(self, __dag):
         """
         Takes in a Directed Acyclic Graph of the form
@@ -62,8 +71,8 @@ class BayesianNet(ABC):
         """
         self.__dag = __dag
         self.__d = self.__dag.shape[1]
-        self.__roots = self.__get_roots()
-        self.__leaves = self.__get_leaves()
+        self.__roots = self.__construct_roots()
+        self.__leaves = self.__construct_leaves()
 
     '''
     #old implementaiton, which technically allows overriding implementation to have
@@ -93,11 +102,8 @@ class BayesianNet(ABC):
         assert x.shape[0] == self.__d
         acc = 1
         for i in range(self.__d):
-            i_parents = self.__get_parents(i)
+            i_parents = self.get_parents(i)
             i_parent_values = x[i_parents]
             parent_value_dict = {i_parents[i]:i_parent_values[i] for i in range(len(i_parents))}
             acc = acc * self.conditional_prob(i, x[i], parent_value_dict)
         return acc
-
-    def get_dag(self):
-        return self.__dag.copy()
