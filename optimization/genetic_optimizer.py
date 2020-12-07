@@ -67,7 +67,8 @@ if __name__ == "__main__":
     Example code for how to use genetic optimizer
     '''
     def crossover_func(x1, x2):
-        crossover_point = np.random.randint(0, min(len(x1), len(x2)))
+        assert(len(x1) == len(x2))
+        crossover_point = np.random.randint(0, len(x1))
         out = []
         for i in range(0, crossover_point):
             out.append(x1[i])

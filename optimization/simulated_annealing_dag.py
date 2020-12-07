@@ -41,6 +41,7 @@ def neighbors_func(A):
                     B[:] = A
                     B[i, j]=1
                     possibilities_list.append(B)
+                    
 if __name__ == "__main__":
     a = np.array([[0, 1, 0, 1], [0, 0, 1, 1], [0, 0, 0, 0], [0, 0, 1, 0]])
     print(neighbors_func(a))

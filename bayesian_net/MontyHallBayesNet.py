@@ -5,7 +5,7 @@
 
 
 import numpy as np
-from .BayesianNetwork import BayesianNet
+from bayesian_net.BayesianNetwork import BayesianNet
 
 
 # In[4]:
@@ -54,35 +54,6 @@ class MontyBayesNet(BayesianNet):
 
 
     """
-    Old implementation for old conditional_prob spec
-
-
-    Bayesian network for the monty hall problem
-    """
-    '''
-    def conditional_prob(self,x,i):
-        """
-        assuming the door chosen by guest and door with prize are chosen uniformly at random
-        Monty will always pick a door that the guest did not to reveal, and will never reveal the prize door
-        doors are labeled 'A', 'B', 'C'
-        """
-        if i == 0:
-            return 1/3
-        elif i == 1:
-            return 1/3
-        else:
-            guest = x[0]
-            prize = x[1]
-            monty = x[2]
-            if monty == guest or monty == prize:
-                return 0
-            else:
-                if guest == prize:
-                    return 1/2
-                else:
-                    return 1
-    '''
-    """
     returns: a prediction of the unspecifiec value x[i]
     vals is a list of possible values that x[i] can take
     """
@@ -97,8 +68,11 @@ class MontyBayesNet(BayesianNet):
         probs = {k:p/total_prob for k, p in probs.items()}
         return probs
 
-    def monty_hall_sampler_func(self, prob_func):
-        probs = {k: prob_func(k) for k in ['A', 'B', 'C']}
+    '''
+    For use with bayesian_net_sampler
+    '''
+    def sample_variable(self, i, parent_values):
+        probs = {k: self.conditional_prob(i, k, parent_values) for k in ['A', 'B', 'C']}
         r = np.random.random_sample()
         sum = 0
         for k in probs:
