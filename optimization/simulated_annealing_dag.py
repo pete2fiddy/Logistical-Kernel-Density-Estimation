@@ -41,6 +41,26 @@ def neighbors_func(A):
                     B[:] = A
                     B[i, j]=1
                     possibilities_list.append(B)
+                    
+def exponentiation(A, exponent):
+    if(exponent == 1):
+        return A
+    else:
+        final_matrix = exponentiation(A, (exponent-(exponent % 2))/2)
+        final_matrix = np.matmul(final_matrix, final_matrix)
+        if(exponent % 2 == 1):
+            final_matrix = np.matmul(final_matrix, A)
+    return final_matrix
+
+def check_dag_properties(A):
+    assert(A.shape[0] == A.shape[1])
+    exponent = A.shape[0]
+    final_matrix = exponentiation(A, exponent)
+    if np.trace(final_matrix) == 0:
+        return True
+    else:
+        return False
 if __name__ == "__main__":
     a = np.array([[0, 1, 0, 1], [0, 0, 1, 1], [0, 0, 0, 0], [0, 0, 1, 0]])
+    assert(check_dag_properties(a))
     print(neighbors_func(a))
