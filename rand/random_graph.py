@@ -15,7 +15,5 @@ def random_dag(n, max_out_deg):
         i_out_deg = np.random.randint(0, min(U.shape[1] - i, max_out_deg))
         i_children = np.random.choice(np.arange(i + 1, U.shape[0]), size = i_out_deg, replace = False)
         U[i, i_children] = 1
-
-    print("U: ", U)
     P = random_matrix.random_permutation_matrix(n)
-    return np.dot(P, U)
+    return np.dot(np.dot(P.T, U), P)

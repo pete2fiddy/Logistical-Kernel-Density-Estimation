@@ -41,7 +41,7 @@ def neighbors_func(A):
                     B[:] = A
                     B[i, j]=1
                     possibilities_list.append(B)
-                    
+
 def exponentiation(A, exponent):
     if(exponent == 1):
         return A
