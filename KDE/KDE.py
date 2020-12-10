@@ -16,15 +16,28 @@ class KDE(object):
     Uses silverman's rule of thumb to add choose the bandwidth
     """
     
-    def __init__(self,data,kernel):
+    def __init__(self,data,kernel,H=None):
         self.dataset = data
         self.kernel = kernel
+        if H is None:
+            self.silverman()
+        else:
+            self.H = H
         self.silverman()
         self.kde = self.get_kde()
         
-    def change_kernel(self, kernel):
-        self.silverman()
+    def change_kernel(self, kernel,H=None):
+        if H is None:
+            self.silverman()
+        else:
+            self.H = H
         self.kde = self.get_kde()
+    
+    def change_bandwidth(self,H = None):
+        if H is None:
+            self.silverman()
+        else:
+            self.H = H
         
     def k_H(self,y,x,d):
         H_det = np.linalg.det(self.H) ** (-1/2)
@@ -51,4 +64,3 @@ class KDE(object):
         for i in range(d):
             H[i,i] = const * np.std(self.dataset[:,i])
         self.H = H
-
