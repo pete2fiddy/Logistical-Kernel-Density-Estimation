@@ -4,7 +4,7 @@ import rand.random_graph
 from bayesian_net.MontyHallBayesNet import MontyBayesNet
 from rand.sampling import bayesian_net_sampler
 from bayesian_net.linear_gaussian_bayesian_net import LinearGaussianBayesianNet
-
+import optimization.genetic_optimizer_dag as genetic_optimizer_dag
 
 
 monty_bayes_net = MontyBayesNet()
@@ -31,3 +31,16 @@ std_devs = 0.2 + np.random.rand(linear_gaussian_dag.shape[0])
 linear_gaussian_net = LinearGaussianBayesianNet(W, biases, std_devs)
 linear_gaussian_samples = np.asarray(linear_gaussian_net.get_joint_samples(50)).astype(np.float64)
 print("linear gaussian samples: \n", linear_gaussian_samples)
+
+
+
+
+#dag merging testing
+n = 100
+min_deg = int(0.3*n)
+max_deg = int(0.6*n)
+for i in range(0, 1000):
+    print("i: ", i)
+    A = random_graph.random_dag(n, np.random.randint(min_deg, high = max_deg))
+    B = random_graph.random_dag(n, np.random.randint(min_deg, high = max_deg))
+    N = genetic_optimizer_dag.dag_crossover_fast(A, B)
