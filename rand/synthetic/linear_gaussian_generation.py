@@ -1,14 +1,14 @@
-'''
-TODO: sampling from a general bayesian network is done in a very similar fashion --
-that is, first values for nodes with no in-edges must be sampled, then the nodes
-to which they point can be sampled, etc. In essence, a node cannot be sampled from
-unless all its parents have been sampled already, then p(x[i] | pa(x[i])) can be
-sampled from as all conditional factors are known.
+import numpy as np
+from bayesian_net.linear_gaussian_bayesian_net import LinearGaussianBayesianNet
+from rand import random_graph as random_graph
 
-Once bayesian network framework is implemented, define a general-purpose sampling
-algorithm on bayesian networks,then instead convert this to a function that randomly
-generates a linear-gaussian bayesian network from which samples are easily taken
-'''
-def generate_sparse_linear_gaussian_dataset(dims, max_deg, variance_bounds):
-    U = np.zeros(dims, dims)
-    
+def generate_sparse_linear_gaussian_system(dim, max_deg, std_dev_bounds, bias_bounds):
+    linear_gaussian_dag = random_graph.random_dag(dim, max_deg)
+
+    W = 2 * (np.random.rand(linear_gaussian_dag.shape[0], linear_gaussian_dag.shape[1]) - 0.5) * linear_gaussian_dag
+    biases = bias_bounds[0] + (bias_bounds[1] - bias_bounds[0]) * np.random.rand(linear_gaussian_dag.shape[0])
+    std_devs = std_dev_bounds[0] + (std_dev_bounds[1] - std_dev_bounds[0]) * np.random.rand(linear_gaussian_dag.shape[0])
+
+    linear_gaussian_net = LinearGaussianBayesianNet(W, biases, std_devs)
+
+    return linear_gaussian_net

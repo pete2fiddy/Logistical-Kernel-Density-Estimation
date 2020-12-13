@@ -62,6 +62,11 @@ def optimize(X, fitness_func, n_elite, selection_prob_func, crossover_func, muta
 
 
 
+def proportional_product_selection_probability_func(x):
+    out = np.outer(x, x)
+    out[out < 0] = 0
+    return out / np.sum(out)
+
 if __name__ == "__main__":
     '''
     Example code for how to use genetic optimizer

@@ -62,6 +62,60 @@ def __is_dag(N):
     return np.sum(np.linalg.matrix_power(N, N.shape[0] + 1)) == 0
 
 '''
+returns: a function, f, such that f(dag) performs n_mutations mutations (i.e.
+edge additions / removals) to the DAG dag, while still maintaining the DAG
+property. Also modifies A in-place.
+'''
+def mutate_dag_func(min_mutations, max_mutations):
+    def out(A):
+        n_mutations = np.random.randint(min_mutations, max_mutations)
+        where_edges = np.where(A != 0)
+        where_not_edges = np.where(A == 0)
+        A_edges = [np.array([where_edges[0][i], where_edges[1][i]]) for i in range(len(where_edges[0]))]
+        not_A_edges = [np.array([where_not_edges[0][i], where_not_edges[1][i]]) for i in range(len(where_not_edges[0]))]
+        for mutation_num in range(0, n_mutations):
+            if np.random.rand() < 0.5:
+                __delete_random_edge(A, A_edges, not_A_edges)
+            else:
+                __add_random_edge(A, A_edges, not_A_edges)
+        return A
+
+    return out
+
+'''
+deletes a random edge from A in-place, and updates both A_edges
+and not_A_edges in-place
+
+returns False if no edges can be removed
+'''
+def __delete_random_edge(A, A_edges, not_A_edges):
+    if len(A_edges) == 0:
+        return False
+    to_delete = A_edges.pop(np.random.randint(0, len(A_edges)))
+    A[to_delete[0], to_delete[1]] = 0
+    not_A_edges.append(to_delete)
+
+'''
+adds a random edge to A in-place, updating A_edges and not_A_edges
+in-place. Returns False if no edge addition is possible.
+'''
+def __add_random_edge(A, A_edges, not_A_edges):
+    viable_edges = [i for i in range(0, len(not_A_edges))]
+    while len(viable_edges) > 0:
+        i = viable_edges.pop(np.random.randint(0, len(viable_edges)))
+        to_add = not_A_edges[i]
+        A[to_add[0], to_add[1]] = 1
+        if __is_dag(A):
+            not_A_edges.pop(i)
+            A_edges.append(to_add)
+            return A
+        A[to_add[0], to_add[1]] = 0
+    return False
+
+
+
+
+'''
 #old code that works, but makes DAGs that are too small
 def dag_crossover(A, B):
     N = np.zeros(A.shape, dtype = np.int)
