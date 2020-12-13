@@ -10,7 +10,11 @@ from bayesian_net.BayesianNetwork import BayesianNet
 
 # In[4]:
 
+'''
+TODO: update this to new spec
 
+DEPRECATED, written before bayesian nets were vectorized
+'''
 class MontyBayesNet(BayesianNet):
 
 

@@ -49,7 +49,7 @@ def optimize(X, fitness_func, n_elite, selection_prob_func, crossover_func, muta
 
         X = X_prime
         if k % print_iters == 0:
-            print("elite fitness (" + str(k) + "): " + str(fitnesses[elite_inds]))
+            print("elite fitness (" + str(k) + ") average: " + str(np.average(fitnesses[elite_inds])))
 
         fitnesses = fitness_func(X)
 

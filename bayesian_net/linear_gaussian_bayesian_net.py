@@ -22,8 +22,12 @@ class LinearGaussianBayesianNet(BayesianNet):
             mu += self.__W[i,j] * parent_values[j]
         return mu
 
-    def conditional_prob(self, i, x_i_value, parent_values):
-        return stats.norm(self.__get_node_mean(i, parent_values), self.__std_devs[i]).pdf(x_i_value)
+    def conditional_prob(self, i, x_i_values, parent_values):
+        out = np.zeros(x_i_values.shape[0], dtype = np.float64)
+        for j in range(out.shape[0]):
+            j_parent_values = {k:v[j] for k in parent_values}
+            out[j] = stats.norm(self.__get_node_mean(i, j_parent_values), self.__std_devs[i]).pdf(x_i_values[j])
+        return
 
     def sample_variable(self, i, parent_values):
         return np.random.normal(loc = self.__get_node_mean(i, parent_values), scale = self.__std_devs[i])

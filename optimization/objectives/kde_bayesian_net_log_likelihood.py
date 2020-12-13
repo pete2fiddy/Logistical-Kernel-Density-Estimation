@@ -16,10 +16,19 @@ def bayesian_net_log_likelihood(X_train, X_test, kernel, lambd, regularizer_orde
         for i in range(likelihoods.shape[0]):
             dag = dags[i]
             bayesian_net = KDEBayesianNetwork(dag, X_train, kernel)
+            probs = bayesian_net.joint_prob(X_test)
+            likelihoods[i] = np.sum(np.log(probs)) - lambd * np.sum(dag)**regularizer_order
+        return likelihoods
+        '''
+        likelihoods = np.zeros(len(dags), dtype = np.float64)
+        for i in range(likelihoods.shape[0]):
+            dag = dags[i]
+            bayesian_net = KDEBayesianNetwork(dag, X_train, kernel)
             probs = np.zeros(X_test.shape[0], dtype = np.float64)
             for j in range(X_test.shape[0]):
                 probs[j] = bayesian_net.joint_prob(X_test[j])
             likelihoods[i] = np.sum(np.log(probs)) - lambd * np.sum(dag)**regularizer_order
         return likelihoods
+        '''
 
     return out

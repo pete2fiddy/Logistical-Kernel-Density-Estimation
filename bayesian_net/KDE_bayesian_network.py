@@ -28,6 +28,7 @@ class KDEBayesianNetwork(BayesianNet):
     def sample_variable(self, i, parent_values):
         raise NotImplementedError
 
+    '''
     def conditional_prob(self, i, x_i_value, parent_values):
         x_numerator = np.empty(len(parent_values) + 1).astype(np.float64)
         x_numerator[0] = x_i_value
@@ -38,4 +39,19 @@ class KDEBayesianNetwork(BayesianNet):
         log_out = self.__numerator_kdes[i].score_samples(x_numerator.reshape(1,-1))[0]#self.__numerator_kdes[i].joint_prob(x_numerator)
         if self.__denominator_kdes[i] is not None:
             log_out -= self.__denominator_kdes[i].score_samples(x_numerator[1:].reshape(1,-1))[0]#self.__denominator_kdes[i].joint_prob(x_numerator[1:])
+        return np.exp(log_out)
+    '''
+
+    def conditional_prob(self, i, x_i_values, parent_values):
+        
+        X_numerator = np.empty((x_i_values.shape[0], len(parent_values) + 1)).astype(np.float64)
+        X_numerator[:,0] = x_i_values
+
+        pa_i = self.get_parents(i)
+
+        for j in range(len(pa_i)):
+            X_numerator[:,j+1] = parent_values[pa_i[j]]
+        log_out = self.__numerator_kdes[i].score_samples(X_numerator)
+        if self.__denominator_kdes[i] is not None:
+            log_out -= self.__denominator_kdes[i].score_samples(X_numerator[:,1:])
         return np.exp(log_out)

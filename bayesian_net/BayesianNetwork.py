@@ -61,6 +61,9 @@ class BayesianNet(ABC):
     def get_d(self):
         return self.__d
 
+    def get_dag(self):
+        return self.__dag.copy()
+
     def __init__(self, __dag):
         """
         Takes in a Directed Acyclic Graph of the form
@@ -77,7 +80,7 @@ class BayesianNet(ABC):
 
 
     @abstractmethod
-    def conditional_prob(self, i, x_i_value, parent_values):
+    def conditional_prob(self, i, x_i_values, parent_values):
         """
         returns: the conditional probability P(x_i = x_i_value | x_i_parents = parent_values),
         where parent_values is a dictionary whose keys are the parent indices and its values
@@ -85,17 +88,16 @@ class BayesianNet(ABC):
         """
         pass
 
-    def joint_prob(self,x):
+    def joint_prob(self,X):
         """
         returns: the joint prob of x
         """
-        assert x.shape[0] == self.__d
-        acc = 1
+        assert X.shape[1] == self.__d
+        acc = np.ones(X.shape[0], dtype = np.float64)
         for i in range(self.__d):
             i_parents = self.get_parents(i)
-            i_parent_values = x[i_parents]
-            parent_value_dict = {i_parents[i]:i_parent_values[i] for i in range(len(i_parents))}
-            acc = acc * self.conditional_prob(i, x[i], parent_value_dict)
+            parent_values_dict = {i_parents[i]:X[:,i_parents[i]] for i in range(i_parents.shape[0])}
+            acc = acc * self.conditional_prob(i, X[:,i], parent_values_dict)
         return acc
 
     '''

@@ -1,6 +1,10 @@
 
 import numpy as np
 
+#returns either A or B at random as a VERY quick (but sketchy) crossover
+def random_parent_dag_crossover(A, B):
+    return A if np.random.rand() <= 0.5 else B
+
 def dag_crossover_fast(A, B):
     n_mutual_edges = np.sum(A * B)
     n_non_mutual_edges = np.sum(A + B - 2*(A * B))
@@ -95,6 +99,7 @@ def __delete_random_edge(A, A_edges, not_A_edges):
     A[to_delete[0], to_delete[1]] = 0
     not_A_edges.append(to_delete)
 
+
 '''
 adds a random edge to A in-place, updating A_edges and not_A_edges
 in-place. Returns False if no edge addition is possible.
@@ -111,6 +116,7 @@ def __add_random_edge(A, A_edges, not_A_edges):
             return A
         A[to_add[0], to_add[1]] = 0
     return False
+    
 
 
 
