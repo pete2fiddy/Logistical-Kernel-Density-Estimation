@@ -27,7 +27,8 @@ def simulated_annealing(initial_state, initial_temp, final_temp, alpha, get_cost
 
         if iter_num % print_iters == 0:
             print("best cost(" + str(iter_num) + "): ", best_e)
-            print("current cost(" + str(iter_num) + "): ", e_prime)
+            print("best iterate(" + str(iter_num) + "): \n", best_x)
+            print("---------------------------------------------------------")
 
         if e_prime < best_e:
             best_x = x_prime
