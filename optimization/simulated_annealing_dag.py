@@ -1,5 +1,5 @@
 import numpy as np
-import simulated_annealing as sa
+
 
 '''
 is j an ancestor of i in adjacency matrix dag A
@@ -33,7 +33,6 @@ def neighbors_func(A):
                 B[:] = A
                 B[i, j]=0
                 possibilities_list.append(B)
-                print(B)
             else:
                 #Checks and produces neighbors with added edges
                 if not isAncestor(A, j, i):
@@ -41,6 +40,17 @@ def neighbors_func(A):
                     B[:] = A
                     B[i, j]=1
                     possibilities_list.append(B)
+    return possibilities_list
+
+def degree_constrained_neighbors_func(max_deg):
+    def out(A):
+        neighbors = []
+        for neighbor in neighbors_func(A):
+            if np.sum(neighbor, axis = 1).max() <= max_deg:
+                neighbors.append(neighbor)
+        return neighbors
+    return out
+
 
 def exponentiation(A, exponent):
     if(exponent == 1):

@@ -8,6 +8,8 @@ import optimization.genetic_optimizer as genetic_optimizer
 import rand.synthetic.linear_gaussian_generation as linear_gaussian_generation
 import optimization.objectives.kde_bayesian_net_log_likelihood as kde_bayesian_net_log_likelihood
 import KDE.KDE as KDE
+import optimization.simulated_annealing as simulated_annealing
+import optimization.simulated_annealing_dag as simulated_annealing_dag
 
 n_vars = 7
 max_deg = 3
@@ -23,7 +25,7 @@ X_test = X[int(0.7 * X.shape[0]):, :]
 initial_dags = [random_graph.random_dag(n_vars, max_deg) for i in range(0, 200)]
 
 kernel = 'gaussian'#KDE.guassian_kernel
-
+'''
 opt_dags = genetic_optimizer.optimize(initial_dags, \
     kde_bayesian_net_log_likelihood.bayesian_net_log_likelihood(X_train, X_test, kernel, 1, 1),
     15,  \
@@ -35,16 +37,19 @@ opt_dags = genetic_optimizer.optimize(initial_dags, \
 print("opt_dag: \n", opt_dags[0])
 print("correct dag: \n", linear_gaussian_net.get_dag())
 print("opt vs. correct: ", np.average(opt_dags[0] == linear_gaussian_net.get_dag()))
-
-
 '''
-#dag merging testing
-n = 100
-min_deg = int(0.3*n)
-max_deg = int(0.6*n)
-for i in range(0, 1000):
-    print("i: ", i)
-    A = random_graph.random_dag(n, np.random.randint(min_deg, high = max_deg))
-    B = random_graph.random_dag(n, np.random.randint(min_deg, high = max_deg))
-    N = genetic_optimizer_dag.dag_crossover_fast(A, B)
-'''
+
+#placeholders. Phillip, pls pick good values for these
+initial_temp = kde_bayesian_net_log_likelihood.bayesian_net_log_likelihood(X_train, X_test, kernel, 0, 0, negative = True)(initial_dags[0])
+final_temp = .00001
+alpha = (initial_temp - final_temp) / 1000
+print("linear gaussian log likelihood: ", np.sum(np.log(linear_gaussian_net.joint_prob(X_test))))
+opt_dag = simulated_annealing.simulated_annealing(initial_dags[0], \
+    initial_temp,\
+    final_temp,\
+    alpha, \
+    kde_bayesian_net_log_likelihood.bayesian_net_log_likelihood(X_train, X_test, kernel, 0, 0, negative = True),\
+    simulated_annealing_dag.degree_constrained_neighbors_func(max_deg))
+print("opt_dag: \n", opt_dag)
+print("correct dag: \n", linear_gaussian_net.get_dag())
+print("linear gaussian log likelihood: ", np.sum(np.log(linear_gaussian_net.joint_prob(X_test))))
