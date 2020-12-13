@@ -116,7 +116,7 @@ class BayesianNet(ABC):
 
 
     '''
-    returns n sample from the bayesian network, net. sampler_func is a function
+    returns n sample from the bayesian network. sampler_func is a function
     that can sample from an arbitrary one-dimensional probability distribution, as a list of
     lists whose rows are the samples.
 

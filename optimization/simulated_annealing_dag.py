@@ -44,6 +44,7 @@ def neighbors_func(A):
 
 def degree_constrained_neighbors_func(max_deg):
     def out(A):
+
         neighbors = []
         for neighbor in neighbors_func(A):
             if np.sum(neighbor, axis = 1).max() <= max_deg:
