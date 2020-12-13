@@ -10,7 +10,8 @@ import optimization.objectives.kde_bayesian_net_log_likelihood as kde_bayesian_n
 import KDE.KDE as KDE
 import optimization.simulated_annealing as simulated_annealing
 import optimization.simulated_annealing_dag as simulated_annealing_dag
-
+import KDE.load_data as load_data
+'''
 n_vars = 10
 max_deg = 5
 n_samples = 1000
@@ -42,3 +43,7 @@ opt_dag = simulated_annealing.simulated_annealing(initial_dags[0], \
     print_iters = 10)
 
 print("linear gaussian log likelihood: ", np.sum(np.log(linear_gaussian_net.joint_prob(X_test))))
+'''
+
+X = load_data.load_kde_cleaned_airline_data("Iberia")
+print("X: \n", X)
