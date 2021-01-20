@@ -41,4 +41,8 @@ Where both the numerator and denominators are modeled by kernel density estimato
 
 While we have identified a solution for the problems KDEs face in high dimensions, the structure of the underlying Bayesian network is still unknown. We apply discrete optimization algorithms to determine a high-quality conditionally sparse Bayesian network for the data when each node's conditional probability distribution is constructed using kernel density estimators. Conditional sparsity is enforced by requiring that the size of each set of parent nodes is at most some constant chosen by the user. This condition is particularly straightforward to enforce using the simulated annealing algorithm by only considering neighboring DAGs that meet this criteria, which was the reason we chose to use it.
 
-## Strong Candidate Practical Applications
+## Relation to Logistical Tasks
+
+In logistical tasks, minimizing the number of interactions between components prevents a complicated mess of dependent pieces from forming. This increases the interpretability and flexibility of the system and mitigates the risk of catastrophic failure due to the failure of a highly dependent component. As such, logistical systems are often explicitly formulated such that its components are as independent as possible, and as a result, logistical densities tend to be conditionally sparse. As a result, Bayesian networks are strong candidates for modeling logistical densities.
+
+However, the structure of the network isn't always obvious, especially in larger logistical systems. Our method determines a strong graphical structure for the system by leveraging the conditional sparsity properties logistical tasks tend to display, and results in a joint density constructed to explicitly leverage this property. As such, this approach appears especially well-suited to determining the conditional dependence structure of logistical systems and their underlying probability densities.
