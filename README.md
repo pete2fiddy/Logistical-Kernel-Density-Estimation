@@ -41,7 +41,7 @@ Where both the numerator and denominators are modeled by kernel density estimato
 
 ## Optimization Procedure
 
-While we have identified a solution for the problems KDEs face in high dimensions, the structure of the underlying Bayesian network is still unknown. We apply discrete optimization algorithms to determine a high-quality conditionally sparse Bayesian network for the data when each node's conditional probability distribution is constructed using kernel density estimators. Conditional sparsity is enforced by requiring that the size of each set of parent nodes is at most some constant chosen by the user. This condition is particularly straightforward to enforce using the simulated annealing algorithm by only considering neighboring DAGs that meet this criteria, which was the reason we chose to use it.
+While we have identified a solution for the problems KDEs face in high dimensions, the structure of the underlying Bayesian network is still unknown. We apply discrete optimization algorithms to determine a high-quality conditionally sparse Bayesian network for the data when each node's conditional probability distribution is constructed using kernel density estimators. This is accomplished through maximizing the log-likelihood of a "held-out" dataset that was not used to train the KDEs of the system. Conditional sparsity is enforced by requiring that the size of each set of parent nodes is at most some constant chosen by the user. This condition is particularly straightforward to enforce using the simulated annealing algorithm by only considering neighboring DAGs that meet this criteria, which was the reason we chose to use it.
 
 ## Relation to Logistical Tasks
 
