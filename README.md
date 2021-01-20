@@ -1,8 +1,8 @@
-Kernel density estimators are a form of nearest-neighbor joint density estimate. They tend to suffer, as most nearest-neighbor approaches do, in high dimensions as points are nearly always very far apart by L2 distance. We seek to remedy this issue by leveraging the assumption that the underlying joint distribution is "conditionally sparse" -- that is, the features of the data are conditionally dependent upon only a small number of the other features.
+Kernel density estimators are a form of nearest-neighbor joint density estimate. They tend to suffer, as most nearest-neighbor approaches do, in high dimensions as points are nearly always very far apart by Euclidean distance. We seek to remedy this issue by leveraging the assumption that the underlying joint distribution is "conditionally sparse" -- that is, the features of the data are conditionally dependent upon only a small number of the other features.
 
 ## Bayesian Networks
 
-A Bayesian Network is a form of probabilistic graphical model that encodes the conditional dependencies of the joint distribution. Given a directed acyclic graph (DAG), with a node for each random variable, the parents of each node are the random variables upon which that random variable is conditionally dependent. Through repeated application of the product rule of probability, eliminating the conditionally independent terms of each conditional factor, the following joint probability distribution is derived from the graph structure:
+A Bayesian network is a form of probabilistic graphical model that encodes the conditional dependencies of the joint distribution. Given a directed acyclic graph (DAG), with a node for each random variable, the parents of each node are the random variables upon which that random variable is conditionally dependent. Through repeated application of the product rule of probability, eliminating the conditionally independent terms of each conditional factor, the following joint probability distribution is derived from the graph structure:
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=p(x)&space;=&space;\prod_{i=1}^{d}&space;p(x_i&space;|&space;\text{pa}(x_i))" target="_blank"><img src="https://latex.codecogs.com/gif.latex?p(x)&space;=&space;\prod_{i=1}^{d}&space;p(x_i&space;|&space;\text{pa}(x_i))" title="p(x) = \prod_{i=1}^{d} p(x_i | \text{pa}(x_i))" /></a>
 
@@ -25,6 +25,20 @@ KDEs tend to suffer in high dimensions due to the curse of dimensionality. Prima
 
 ## Our Approach
 
+Recall that the joint distribution derived from a Bayesian network is of the form:
+
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=p(x)&space;=&space;\prod_{i=1}^{d}&space;p(x_i&space;|&space;\text{pa}(x_i))" target="_blank"><img src="https://latex.codecogs.com/gif.latex?p(x)&space;=&space;\prod_{i=1}^{d}&space;p(x_i&space;|&space;\text{pa}(x_i))" title="p(x) = \prod_{i=1}^{d} p(x_i | \text{pa}(x_i))" /></a>
+
+Now, imagine that each conditional probability of the product were represented as follows:
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=p(x|\text{pa}(x_i))&space;=&space;\frac{p(x,&space;\text{pa}(x_i))}{p(\text{pa}(x_i))}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?p(x|\text{pa}(x_i))&space;=&space;\frac{p(x,&space;\text{pa}(x_i))}{p(\text{pa}(x_i))}" title="p(x|\text{pa}(x_i)) = \frac{p(x, \text{pa}(x_i))}{p(\text{pa}(x_i))}" /></a>
+
+Where both the numerator and denominators are modeled by kernel density estimators. Assuming the number of parents each node has in the DAG is small, then these KDEs will be of low dimension, and hence will not suffer from the curse of dimensionality. We henceforth refer to such a Bayesian network with small sets of parents for each node as "conditionally sparse."
+
+
 ## Optimization Procedure
+
+While we have identified a solution for the problems KDEs face in high dimensions, the structure of the underlying Bayesian network is still unknown. We apply discrete optimization algorithms to determine a high-quality conditionally sparse Bayesian network for the data when each node's conditional probability distribution is constructed using kernel density estimators. Conditional sparsity is enforced by requiring that the size of each set of parent nodes is at most some constant chosen by the user. This condition is particularly straightforward to enforce using the simulated annealing algorithm by only considering neighboring DAGs that meet this criteria, which was the reason we chose to use it.
 
 ## Strong Candidate Practical Applications
