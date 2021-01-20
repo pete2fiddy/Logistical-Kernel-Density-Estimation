@@ -22,7 +22,7 @@ Where k is a valid kernel function that integrates to 1. A popular kernel for ke
 
 Where h is a bandwidth parameter that controls the extent to which more distant points influence the density estimate.
 
-KDEs tend to suffer in high dimensions due to the curse of dimensionality. Primarily, they suffer because as the number of dimensions increase, the euclidian norm of an arbitrary point grows significantly. This results in kernel outputs in the KDE that are incredibly small, or even zero, if a kernel with finite support is used.
+KDEs tend to suffer in high dimensions due to the curse of dimensionality. Primarily, they suffer because as the number of dimensions increase, the Euclidean norm of an arbitrary point grows significantly. This results in kernel outputs in the KDE that are incredibly small, or even zero, if a kernel with finite support is used.
 
 
 ## Our Approach
