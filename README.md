@@ -1,3 +1,5 @@
+## Goal
+
 Kernel density estimators are a form of nearest-neighbor joint density estimate. They tend to suffer, as most nearest-neighbor approaches do, in high dimensions as points are nearly always very far apart by Euclidean distance. We seek to remedy this issue by leveraging the assumption that the underlying joint distribution is "conditionally sparse" -- that is, the features of the data are conditionally dependent upon only a small number of the other features.
 
 ## Bayesian Networks
