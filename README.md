@@ -10,7 +10,7 @@ Where pa(x[i]) is the subset of elements of x formed from the parents of node i 
 
 ## Kernel Density Estimators
 
-A kernel density estimator is a nearest-neighbor joint density estimate of the form:
+A kernel density estimator (KDE) is a nearest-neighbor joint density estimate of the form:
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=p(x)&space;=&space;\frac{1}{N}\sum_{i&space;=&space;1}^{N}&space;k(x&space;-&space;x_i)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?p(x)&space;=&space;\frac{1}{N}\sum_{i&space;=&space;1}^{N}&space;k(x&space;-&space;x_i)" title="p(x) = \frac{1}{N}\sum_{i = 1}^{N} k(x - x_i)" /></a>
 
@@ -19,6 +19,9 @@ Where k is a valid kernel function that integrates to 1. A popular kernel for ke
 <a href="https://www.codecogs.com/eqnedit.php?latex=k(x)&space;=&space;\frac{1}{\sqrt{2\pi&space;h^2}}&space;e^{-\frac{\|x\|^2}{2h^2}}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?k(x)&space;=&space;\frac{1}{\sqrt{2\pi&space;h^2}}&space;e^{-\frac{\|x\|^2}{2h^2}}" title="k(x) = \frac{1}{\sqrt{2\pi h^2}} e^{-\frac{\|x\|^2}{2h^2}}" /></a>
 
 Where h is a bandwidth parameter that controls the extent to which more distant points influence the density estimate.
+
+KDEs tend to suffer in high dimensions due to the curse of dimensionality. Primarily, they suffer because as the number of dimensions increase, the euclidian norm of an arbitrary point grows significantly. This results in kernel outputs in the KDE that are incredibly small, or even zero, if a kernel with finite support is used.
+
 
 ## Our Approach
 
