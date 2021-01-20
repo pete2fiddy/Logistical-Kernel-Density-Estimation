@@ -34,7 +34,7 @@ Recall that the joint distribution derived from a Bayesian network is of the for
 
 Now, imagine that each conditional probability of the product were represented as follows:
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=p(x|\text{pa}(x_i))&space;=&space;\frac{p(x,&space;\text{pa}(x_i))}{p(\text{pa}(x_i))}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?p(x|\text{pa}(x_i))&space;=&space;\frac{p(x,&space;\text{pa}(x_i))}{p(\text{pa}(x_i))}" title="p(x|\text{pa}(x_i)) = \frac{p(x, \text{pa}(x_i))}{p(\text{pa}(x_i))}" /></a>
+<a href="https://www.codecogs.com/eqnedit.php?latex=p(x_i|\text{pa}(x_i))&space;=&space;\frac{p(x_i,&space;\text{pa}(x_i))}{p(\text{pa}(x_i))}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?p(x_i|\text{pa}(x_i))&space;=&space;\frac{p(x_i,&space;\text{pa}(x_i))}{p(\text{pa}(x_i))}" title="p(x_i|\text{pa}(x_i)) = \frac{p(x_i, \text{pa}(x_i))}{p(\text{pa}(x_i))}" /></a>
 
 Where both the numerator and denominators are modeled by kernel density estimators. Assuming the number of parents each node has in the DAG is small, then these KDEs will be of low dimension, and hence will not suffer from the curse of dimensionality. We henceforth refer to such a Bayesian network with small sets of parents for each node as "conditionally sparse."
 
