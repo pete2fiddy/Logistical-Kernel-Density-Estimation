@@ -39,6 +39,18 @@ class KDEBayesianNetwork(BayesianNet):
                 #None if RV i is not conditionally dependent on anything. In this case,
                 #denominator KDE should just act as the 1 function
                 self.__denominator_kdes[i] = KernelDensity(kernel = kernel, bandwidth = bandwidth, leaf_size = self.__LEAF_SIZE, atol = self.__ATOL, rtol = self.__RTOL, breadth_first = self.__BREADTH_FIRST).fit(X_trunc[:,1:])#stats.multivariate_normal(mean = np.mean(X_trunc[:,1:], axis = 0), cov = np.cov(X_trunc[:,1:].T))#
+    def __modify_numerator_and_denominator_kdes(self, X, i, kernel, bandwidth):
+        pa_i = self.get_parents(i)
+        X_trunc = np.zeros((X.shape[0], pa_i.shape[0] + 1), dtype = np.float64)
+
+        X_trunc[:,0] = X[:,i]
+        X_trunc[:,1:] = X[:, pa_i]
+
+        self.__numerator_kdes[i] = KernelDensity(kernel = kernel, bandwidth = bandwidth, leaf_size = self.__LEAF_SIZE, atol = self.__ATOL, rtol = self.__RTOL, breadth_first = self.__BREADTH_FIRST).fit(X_trunc)#stats.multivariate_normal(mean = np.mean(X_trunc, axis = 0), cov = np.cov(X_trunc.T))
+        if X_trunc.shape[1] > 1:
+            #None if RV i is not conditionally dependent on anything. In this case,
+            #denominator KDE should just act as the 1 function
+            self.__denominator_kdes[i] = KernelDensity(kernel = kernel, bandwidth = bandwidth, leaf_size = self.__LEAF_SIZE, atol = self.__ATOL, rtol = self.__RTOL, breadth_first = self.__BREADTH_FIRST).fit(X_trunc[:,1:])#stats.multivariate_normal(mean = np.mean(X_trunc[:,1:], axis = 0), cov = np.cov(X_trunc[:,1:].T))#
 
 
     def sample_variable(self, i, parent_values):
@@ -72,3 +84,17 @@ class KDEBayesianNetwork(BayesianNet):
         if self.__denominator_kdes[i] is not None:
             log_out -= self.__denominator_kdes[i].score_samples(X_numerator[:,1:])
         return np.exp(log_out)
+    def modified_conditional_prob(self, X, kernel, i, x_i_values, parent_values):
+        bandwidth = self.__silverman_bandwidth(X)
+        pa_i = self.get_parents(i)
+        X_trunc = np.zeros((X.shape[0], pa_i.shape[0] + 1), dtype = np.float64)
+
+        X_trunc[:,0] = X[:,i]
+        X_trunc[:,1:] = X[:, pa_i]
+
+        self.__numerator_kdes[i] = KernelDensity(kernel = kernel, bandwidth = bandwidth, leaf_size = self.__LEAF_SIZE, atol = self.__ATOL, rtol = self.__RTOL, breadth_first = self.__BREADTH_FIRST).fit(X_trunc)#stats.multivariate_normal(mean = np.mean(X_trunc, axis = 0), cov = np.cov(X_trunc.T))
+        if X_trunc.shape[1] > 1:
+            #None if RV i is not conditionally dependent on anything. In this case,
+            #denominator KDE should just act as the 1 function
+            self.__denominator_kdes[i] = KernelDensity(kernel = kernel, bandwidth = bandwidth, leaf_size = self.__LEAF_SIZE, atol = self.__ATOL, rtol = self.__RTOL, breadth_first = self.__BREADTH_FIRST).fit(X_trunc[:,1:])#stats.multivariate_normal(mean = np.mean(X_trunc[:,1:], axis = 0), cov = np.cov(X_trunc[:,1:].T))#
+        return self.conditional_prob(i, x_i_values, parent_values)

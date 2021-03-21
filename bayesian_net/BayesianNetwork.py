@@ -87,6 +87,14 @@ class BayesianNet(ABC):
         are their corresponding values.
         """
         pass
+    @abstractmethod
+    def modified_conditional_prob(self, X, kernel, i, x_i_values, parent_values):
+        """
+        returns: the conditional probability P(x_i = x_i_value | x_i_parents = parent_values),
+        where parent_values is a dictionary whose keys are the parent indices and its values
+        are their corresponding values.
+        """
+        pass
 
     def joint_prob(self,X):
         """
@@ -99,6 +107,27 @@ class BayesianNet(ABC):
             parent_values_dict = {i_parents[i]:X[:,i_parents[i]] for i in range(i_parents.shape[0])}
             acc = acc * self.conditional_prob(i, X[:,i], parent_values_dict)
         return acc
+    def joint_prob_differential(self, X, data, kernel, edge):
+        """
+        edge: tuple (parent, child) edge that is added or removed
+        """
+        assert X.shape[1] == self.__d
+        child_parents = self.get_parents(edge[1])
+        parent_values_dict = {child_parents[i]:X[:, child_parents[i]] for i in range(child_parents.shape[0])}
+        print(parent_values_dict)
+        print(self.__dag)
+        previous_probability = self.conditional_prob(edge[1], X[:,edge[1]], parent_values_dict)
+        if edge[0] in child_parents:
+            self.__dag[edge[0], edge[1]] = 0
+            del parent_values_dict[edge[0]]
+        else:
+            self.__dag[edge[0], edge[1]] = 1
+            parent_values_dict[edge[0]] = X[:,edge[0]]
+        print(parent_values_dict)
+        print(self.__dag)
+        new_probability = self.modified_conditional_prob(data, kernel, edge[1], X[:,edge[1]], parent_values_dict)
+        return new_probability/previous_probability
+
 
     '''
     Not critical for implementation, if not implemented, have it raise a NotImplementedError.
