@@ -114,8 +114,6 @@ class BayesianNet(ABC):
         assert X.shape[1] == self.__d
         child_parents = self.get_parents(edge[1])
         parent_values_dict = {child_parents[i]:X[:, child_parents[i]] for i in range(child_parents.shape[0])}
-        print(parent_values_dict)
-        print(self.__dag)
         previous_probability = self.conditional_prob(edge[1], X[:,edge[1]], parent_values_dict)
         if edge[0] in child_parents:
             self.__dag[edge[0], edge[1]] = 0
@@ -123,10 +121,9 @@ class BayesianNet(ABC):
         else:
             self.__dag[edge[0], edge[1]] = 1
             parent_values_dict[edge[0]] = X[:,edge[0]]
-        print(parent_values_dict)
         print(self.__dag)
         new_probability = self.modified_conditional_prob(data, kernel, edge[1], X[:,edge[1]], parent_values_dict)
-        return new_probability/previous_probability
+        return (new_probability/previous_probability, self.__dag)
 
 
     '''

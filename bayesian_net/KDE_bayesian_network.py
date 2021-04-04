@@ -79,7 +79,6 @@ class KDEBayesianNetwork(BayesianNet):
 
         for j in range(len(pa_i)):
             X_numerator[:,j+1] = parent_values[pa_i[j]]
-
         log_out = self.__numerator_kdes[i].score_samples(X_numerator)
         if self.__denominator_kdes[i] is not None:
             log_out -= self.__denominator_kdes[i].score_samples(X_numerator[:,1:])

@@ -84,10 +84,11 @@ def simulated_annealing(initial_state, initial_temp, final_temp, alpha, get_cost
     print(best_iterate)
     return best_iterate
     '''
-def simulated_annealing_modified(initial_state, initial_temp, final_temp, alpha, get_cost, get_neighbors_and_edge, get_cost_ratio, print_iters = 50):
+
+def simulated_annealing_modified(initial_state, initial_temp, final_temp, alpha, initial_cost, get_cost_differential, get_neighbors_and_edge, print_iters = 50):
     T = initial_temp
     x = initial_state
-    e = get_cost(x)
+    e = initial_cost
     iter_num = 0
 
     best_x = x
@@ -95,7 +96,8 @@ def simulated_annealing_modified(initial_state, initial_temp, final_temp, alpha,
 
     while T > final_temp:
         x_prime, (i, j) = random.choice(get_neighbors_and_edge(x))
-        cost_ratio = get_cost_ratio(x, (i, j))
+        cost_differential = get_cost_differential(x, (i, j))
+        e_prime = e+cost_differential
         if iter_num % print_iters == 0:
             print("best cost(" + str(iter_num) + "): ", best_e)
             print("best iterate(" + str(iter_num) + "): \n", best_x)

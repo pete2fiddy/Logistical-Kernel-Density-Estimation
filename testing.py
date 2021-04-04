@@ -61,12 +61,14 @@ initial_temp = kde_bayesian_net_log_likelihood.bayesian_net_log_likelihood(X_tra
 #generally seems to be the case that the baseline log likelihood as at the least half the intial temperature
 final_temp = initial_temp / 2
 alpha = (initial_temp - final_temp) / 5000
-opt_dag = simulated_annealing.simulated_annealing(initial_dags[0], \
+#simulated_annealing_modified(initial_state, initial_temp, final_temp, alpha, initial_cost, get_cost_ratio, get_neighbors_and_edge, print_iters = 50):
+opt_dag = simulated_annealing.simulated_annealing_modified(initial_dags[0], \
     initial_temp,\
     final_temp,\
     alpha, \
-    kde_bayesian_net_log_likelihood.bayesian_net_log_likelihood(X_train, X_test, kernel, 0, 0, negative = True),\
-    simulated_annealing_dag.degree_constrained_neighbors_func(max_deg),\
+    initial_temp,\
+    kde_bayesian_net_log_likelihood.bayesian_net_log_likelihood_differential(X_train, X_test, kernel, 0, 0, negative = True),\
+    simulated_annealing_dag.degree_constrained_neighbors_func_modified(max_deg),\
     print_iters = 10)
 
 kde_on_X_test_log_likelihood = np.sum(np.log(kde_on_X.evaluate(X_test.T)))

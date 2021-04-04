@@ -51,7 +51,15 @@ def degree_constrained_neighbors_func(max_deg):
                 neighbors.append(neighbor)
         return neighbors
     return out
+def degree_constrained_neighbors_func_modified(max_deg):
+    def out(A):
 
+        neighbors = []
+        for neighbor in neighbors_and_edge_func(A):
+            if np.sum(neighbor[0], axis = 1).max() <= max_deg:
+                neighbors.append(neighbor)
+        return neighbors
+    return out
 
 def exponentiation(A, exponent):
     if(exponent == 1):
