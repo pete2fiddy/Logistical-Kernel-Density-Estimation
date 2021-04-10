@@ -86,6 +86,8 @@ class KDEBayesianNetwork(BayesianNet):
     def modified_conditional_prob(self, X, kernel, i, x_i_values, parent_values):
         bandwidth = self.__silverman_bandwidth(X)
         pa_i = self.get_parents(i)
+        self.__numerator_kdes[i] = None
+        self.__denominator_kdes[i] = None
         X_trunc = np.zeros((X.shape[0], pa_i.shape[0] + 1), dtype = np.float64)
 
         X_trunc[:,0] = X[:,i]

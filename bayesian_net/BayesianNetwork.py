@@ -121,7 +121,6 @@ class BayesianNet(ABC):
         else:
             self.__dag[edge[0], edge[1]] = 1
             parent_values_dict[edge[0]] = X[:,edge[0]]
-        print(self.__dag)
         new_probability = self.modified_conditional_prob(data, kernel, edge[1], X[:,edge[1]], parent_values_dict)
         return (new_probability/previous_probability, self.__dag)
 
